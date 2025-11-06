@@ -3,9 +3,1200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Love Rico Love Rico</title>
+    <title>Rico's Death Battle</title>
+    <style>
+        :root {
+            color-scheme: dark light;
+            --bg: #12141f;
+            --stage: #1f2333;
+            --rope: #f7b733;
+            --p1: #ff5f5f;
+            --p2: #6ac6ff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top, #273048 0%, var(--bg) 65%);
+            color: #ecf3ff;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        h1 {
+            letter-spacing: 2px;
+            font-size: 2.2rem;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        #game-wrapper {
+            width: min(960px, 100vw - 40px);
+            background: rgba(12, 14, 24, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(14px);
+        }
+
+        #hud {
+            display: flex;
+            justify-content: space-between;
+            gap: 18px;
+            margin-bottom: 16px;
+        }
+
+        .health-block {
+            flex: 1;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .health-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .health-bar {
+            flex: 1;
+            height: 18px;
+            border-radius: 999px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .health-fill {
+            height: 100%;
+            width: 100%;
+            transition: width 140ms ease-out;
+        }
+
+        #arena {
+            display: block;
+            width: 100%;
+            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(10, 15, 25, 0.55) 0%, rgba(12, 17, 26, 0.9) 55%), url("https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1600&q=80") center/cover;
+            border: 2px solid rgba(255, 255, 255, 0.05);
+        }
+
+        #info-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            gap: 12px;
+        }
+
+        #controls {
+            flex: 1;
+            font-size: 0.85rem;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 12px 14px;
+            border-radius: 10px;
+            line-height: 1.6;
+        }
+
+        #customization {
+            flex: 0 1 220px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: 0.82rem;
+        }
+
+        #customization label {
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        #customization input[type="file"] {
+            font-size: 0.8rem;
+            color: #dbe7ff;
+        }
+
+        #customization small {
+            opacity: 0.75;
+        }
+
+        #reset {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #f64f59, #c471ed, #12c2e9);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        #reset:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(18, 194, 233, 0.2);
+        }
+
+        #announcement {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(6px);
+            border-radius: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        #announcement.visible {
+            opacity: 1;
+        }
+
+        #arena-container {
+            position: relative;
+        }
+
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 1.6rem;
+            }
+
+            #hud {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
-    Rico needs love too
+    <h1>Rico's Death Battle</h1>
+    <div id="game-wrapper">
+        <div id="hud">
+            <div class="health-block">
+                <span class="health-label">P1</span>
+                <div class="health-bar">
+                    <div id="p1-health" class="health-fill" style="background: var(--p1);"></div>
+                </div>
+            </div>
+            <div class="health-block" style="justify-content: flex-end;">
+                <div class="health-bar">
+                    <div id="p2-health" class="health-fill" style="background: var(--p2);"></div>
+                </div>
+                <span class="health-label">P2</span>
+            </div>
+        </div>
+        <div id="arena-container">
+            <canvas id="arena" width="900" height="420"></canvas>
+            <div id="announcement"></div>
+        </div>
+        <div id="info-row">
+            <div id="controls">
+                <strong>P1</strong> Move: A / D &nbsp; Jump: W &nbsp; Strike: F<br>
+                <strong>P2</strong> Move: ← / → &nbsp; Jump: ↑ &nbsp; Strike: L
+            </div>
+            <div id="customization">
+                <label for="p1-upload">P1 Custom Art</label>
+                <input id="p1-upload" type="file" accept="image/*">
+                <small>Drop your drawing to enter the arena.</small>
+                <label for="p2-upload">P2 Custom Art</label>
+                <input id="p2-upload" type="file" accept="image/*">
+                <small>Second challenger joins with your art.</small>
+                <label for="music-upload">Background Music</label>
+                <input id="music-upload" type="file" accept="audio/*">
+                <small>Loop a custom soundtrack (audio file).</small>
+            </div>
+            <button id="reset" type="button">Rematch</button>
+        </div>
+    </div>
+    <script>
+        const canvas = document.getElementById("arena");
+        const ctx = canvas.getContext("2d");
+        const announcement = document.getElementById("announcement");
+        const p1HealthEl = document.getElementById("p1-health");
+        const p2HealthEl = document.getElementById("p2-health");
+        const resetButton = document.getElementById("reset");
+        const p1Upload = document.getElementById("p1-upload");
+        const p2Upload = document.getElementById("p2-upload");
+    const musicUpload = document.getElementById("music-upload");
+
+        const groundLine = canvas.height - 70;
+        const gravity = 0.65;
+        const friction = 0.82;
+
+        const keymap = {
+            p1: { left: "KeyA", right: "KeyD", jump: "KeyW", attack: "KeyF" },
+            p2: { left: "ArrowLeft", right: "ArrowRight", jump: "ArrowUp", attack: "KeyL" }
+        };
+
+        const controlState = {
+            p1: { left: false, right: false, jump: false, attack: false },
+            p2: { left: false, right: false, jump: false, attack: false }
+        };
+
+        const meteors = [];
+        const maxMeteors = 6;
+        const gravelPieces = [];
+        const gravelCount = 180;
+    const bloodBursts = [];
+    const maxBloodParticles = 280;
+    const lightningBolts = [];
+    const maxLightning = 3;
+    let audioCtx = null;
+    let audioUnlocked = false;
+    let musicNodes = null;
+    let moonRotation = 0;
+
+        class Fighter {
+            constructor(options) {
+                Object.assign(this, options);
+                this.vx = 0;
+                this.vy = 0;
+                this.health = 100;
+                this.isAttacking = false;
+                this.attackTimer = 0;
+                this.attackReady = true;
+                this.hasHit = false;
+                this.image = null;
+                this.imageUrl = null;
+                this.imageLoaded = false;
+                this.spriteNaturalWidth = 0;
+                this.spriteNaturalHeight = 0;
+            }
+
+            reset(startingX) {
+                this.x = startingX;
+                this.y = groundLine - this.height;
+                this.vx = 0;
+                this.vy = 0;
+                this.health = 100;
+                this.isAttacking = false;
+                this.attackTimer = 0;
+                this.attackReady = true;
+                this.hasHit = false;
+            }
+        }
+
+        const fighters = {
+            p1: new Fighter({
+                id: "p1",
+                color: "#ff7272",
+                x: canvas.width * 0.25,
+                y: groundLine - 150,
+                width: 90,
+                height: 150,
+                facing: 1
+            }),
+            p2: new Fighter({
+                id: "p2",
+                color: "#70d4ff",
+                x: canvas.width * 0.75 - 90,
+                y: groundLine - 150,
+                width: 90,
+                height: 150,
+                facing: -1
+            })
+        };
+
+        let matchActive = true;
+
+        const movementSpeed = 4.2;
+        const jumpStrength = 13.5;
+        const attackDuration = 16;
+        const attackWindowStart = 5;
+        const attackWindowEnd = 11;
+        const attackRange = 70;
+        const attackDamage = 14;
+        const attackCooldown = 28;
+
+        function spawnMeteor() {
+            const startX = Math.random() * canvas.width * 0.6 - canvas.width * 0.2;
+            const startY = -Math.random() * 120 - 40;
+            const speed = 6 + Math.random() * 3;
+            const angle = (Math.PI / 4) + Math.random() * 0.35;
+            meteors.push({
+                x: startX,
+                y: startY,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                length: 90 + Math.random() * 70,
+                radius: 10 + Math.random() * 6,
+                life: 1
+            });
+        }
+
+        function updateMeteors() {
+            if (meteors.length < maxMeteors && Math.random() < 0.1) {
+                spawnMeteor();
+            }
+
+            for (let i = meteors.length - 1; i >= 0; i -= 1) {
+                const meteor = meteors[i];
+                meteor.x += meteor.vx;
+                meteor.y += meteor.vy;
+                meteor.life -= 0.0025;
+
+                if (meteor.y > groundLine + 80 || meteor.x > canvas.width + 100 || meteor.life <= 0) {
+                    meteors.splice(i, 1);
+                }
+            }
+        }
+
+        function drawMeteors() {
+            meteors.forEach(meteor => {
+                ctx.save();
+                ctx.translate(meteor.x, meteor.y);
+                const angle = Math.atan2(meteor.vy, meteor.vx);
+                ctx.rotate(angle);
+
+                const gradient = ctx.createLinearGradient(0, 0, -meteor.length, 0);
+                gradient.addColorStop(0, "rgba(255, 245, 214, 0.95)");
+                gradient.addColorStop(0.2, "rgba(255, 176, 84, 0.9)");
+                gradient.addColorStop(0.6, "rgba(255, 84, 79, 0.55)");
+                gradient.addColorStop(1, "rgba(255, 84, 79, 0)");
+
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(-meteor.length, meteor.radius * 0.62);
+                ctx.lineTo(-meteor.length, -meteor.radius * 0.62);
+                ctx.closePath();
+                ctx.fill();
+
+                const coreGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, meteor.radius);
+                coreGradient.addColorStop(0, "rgba(255, 244, 214, 1)");
+                coreGradient.addColorStop(0.5, "rgba(255, 184, 84, 0.9)");
+                coreGradient.addColorStop(1, "rgba(255, 90, 60, 0.4)");
+                ctx.fillStyle = coreGradient;
+                ctx.beginPath();
+                ctx.arc(0, 0, meteor.radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.restore();
+            });
+        }
+
+        function spawnLightningBolt() {
+            if (lightningBolts.length >= maxLightning) {
+                return;
+            }
+            const depth = Math.random() < 0.55 ? "foreground" : "background";
+            const steps = 7 + Math.floor(Math.random() * 5);
+            const horizontalSwing = depth === "foreground" ? 120 : 70;
+            const startX = Math.random() * canvas.width;
+            const segments = [];
+            const branches = [];
+            let x = startX;
+            let y = -60;
+            for (let i = 0; i <= steps; i += 1) {
+                segments.push({ x, y });
+                if (i >= 2 && Math.random() < 0.3 && i < steps - 1) {
+                    const branchLength = 2 + Math.floor(Math.random() * 3);
+                    let bx = x;
+                    let by = y;
+                    const branchPoints = [];
+                    for (let b = 0; b < branchLength; b += 1) {
+                        bx += (Math.random() - 0.1) * (horizontalSwing * 0.7);
+                        by += 30 + Math.random() * 45;
+                        branchPoints.push({ x: bx, y: by });
+                    }
+                    branches.push({ start: { x, y }, points: branchPoints });
+                }
+                x += (Math.random() - 0.5) * horizontalSwing;
+                y += (groundLine - 140) / steps;
+            }
+            segments.push({ x, y: groundLine - (depth === "foreground" ? 120 : 160) });
+
+            lightningBolts.push({
+                depth,
+                segments,
+                branches,
+                life: 1,
+                decay: 0.03 + Math.random() * 0.02
+            });
+        }
+
+        function updateLightning() {
+            if (Math.random() < 0.02) {
+                spawnLightningBolt();
+            }
+            for (let i = lightningBolts.length - 1; i >= 0; i -= 1) {
+                const bolt = lightningBolts[i];
+                bolt.life -= bolt.decay;
+                if (bolt.life <= 0) {
+                    lightningBolts.splice(i, 1);
+                }
+            }
+        }
+
+        function drawLightning() {
+            if (lightningBolts.length === 0) {
+                return;
+            }
+            ctx.save();
+            ctx.globalCompositeOperation = "screen";
+            lightningBolts.forEach(bolt => {
+                const alpha = Math.max(0, Math.min(1, bolt.life * 1.4));
+                const lineWidth = bolt.depth === "foreground" ? 5.5 : 3.5;
+                const glowWidth = lineWidth * 3.2;
+
+                const drawPath = (points, width, colorAlpha, blur) => {
+                    ctx.save();
+                    ctx.strokeStyle = `rgba(160, 195, 255, ${colorAlpha})`;
+                    ctx.lineWidth = width;
+                    ctx.lineCap = "round";
+                    ctx.shadowColor = `rgba(120, 180, 255, ${colorAlpha})`;
+                    ctx.shadowBlur = blur;
+                    ctx.beginPath();
+                    const first = points[0];
+                    ctx.moveTo(first.x, first.y);
+                    for (let i = 1; i < points.length; i += 1) {
+                        const p = points[i];
+                        ctx.lineTo(p.x, p.y);
+                    }
+                    ctx.stroke();
+                    ctx.restore();
+                };
+
+                drawPath(bolt.segments, glowWidth, alpha * 0.25, 55);
+                drawPath(bolt.segments, lineWidth, alpha * 0.9, bolt.depth === "foreground" ? 22 : 14);
+
+                bolt.branches.forEach(branch => {
+                    const points = [branch.start, ...branch.points];
+                    drawPath(points, glowWidth * 0.4, alpha * 0.22, 30);
+                    drawPath(points, lineWidth * 0.55, alpha * 0.7, 12);
+                });
+
+                if (bolt.depth === "foreground") {
+                    ctx.fillStyle = `rgba(230, 245, 255, ${alpha * 0.08})`;
+                    ctx.fillRect(0, 0, canvas.width, groundLine - 60);
+                }
+            });
+            ctx.restore();
+        }
+
+        function initializeGravel() {
+            if (gravelPieces.length > 0) {
+                return;
+            }
+            const palette = [
+                { base: "rgba(78, 61, 41, 0.85)", highlight: "rgba(138, 112, 82, 0.55)" },
+                { base: "rgba(92, 75, 52, 0.82)", highlight: "rgba(160, 134, 96, 0.5)" },
+                { base: "rgba(68, 54, 38, 0.88)", highlight: "rgba(122, 99, 68, 0.46)" }
+            ];
+            for (let i = 0; i < gravelCount; i += 1) {
+                const color = palette[Math.floor(Math.random() * palette.length)];
+                const radius = 0.9 + Math.random() * 1.8;
+                const x = Math.random() * canvas.width;
+                const y = groundLine - 6 + Math.random() * 60;
+                const skew = Math.random() * Math.PI * 2;
+                gravelPieces.push({
+                    x,
+                    y,
+                    radius,
+                    highlightRadius: radius * (0.4 + Math.random() * 0.3),
+                    angle: skew,
+                    base: color.base,
+                    highlight: color.highlight
+                });
+            }
+        }
+
+        function getAudioContext() {
+            if (audioCtx) {
+                return audioCtx;
+            }
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContextClass) {
+                return null;
+            }
+            audioCtx = new AudioContextClass();
+            return audioCtx;
+        }
+
+        function resumeAudio() {
+            const ctx = getAudioContext();
+            if (!ctx) {
+                return;
+            }
+            if (ctx.state === "suspended") {
+                const resumePromise = ctx.resume();
+                if (resumePromise && typeof resumePromise.then === "function") {
+                    resumePromise.finally(() => {
+                        audioUnlocked = true;
+                        startBackgroundMusic();
+                    }).catch(() => {
+                        audioUnlocked = true;
+                        startBackgroundMusic();
+                    });
+                }
+            }
+            audioUnlocked = true;
+            startBackgroundMusic();
+        }
+
+        function playHitSound() {
+            const ctx = getAudioContext();
+            if (!ctx) {
+                return;
+            }
+            if (!audioUnlocked) {
+                resumeAudio();
+            }
+            if (!audioUnlocked && ctx.state === "suspended") {
+                return;
+            }
+
+            const now = ctx.currentTime;
+
+            const osc = ctx.createOscillator();
+            osc.type = "triangle";
+            osc.frequency.setValueAtTime(220, now);
+            osc.frequency.exponentialRampToValueAtTime(70, now + 0.18);
+
+            const impactGain = ctx.createGain();
+            impactGain.gain.setValueAtTime(0.65, now);
+            impactGain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+
+            osc.connect(impactGain).connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.22);
+
+            const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * 0.18, ctx.sampleRate);
+            const data = noiseBuffer.getChannelData(0);
+            for (let i = 0; i < data.length; i += 1) {
+                const envelope = 1 - i / data.length;
+                data[i] = (Math.random() * 2 - 1) * envelope * 0.55;
+            }
+
+            const noiseSource = ctx.createBufferSource();
+            noiseSource.buffer = noiseBuffer;
+            const noiseGain = ctx.createGain();
+            noiseGain.gain.setValueAtTime(0.5, now);
+            noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
+            noiseSource.connect(noiseGain).connect(ctx.destination);
+            noiseSource.start(now);
+            noiseSource.stop(now + 0.2);
+        }
+
+        function stopBackgroundMusic() {
+            if (!musicNodes) {
+                return;
+            }
+            const ctx = getAudioContext();
+            const nodes = musicNodes;
+            musicNodes = null;
+
+            if (nodes.intervalId) {
+                clearInterval(nodes.intervalId);
+            }
+
+            if (ctx) {
+                const now = ctx.currentTime;
+                if (nodes.masterGain) {
+                    try {
+                        nodes.masterGain.gain.cancelScheduledValues(now);
+                        nodes.masterGain.gain.setTargetAtTime(0.0001, now, 0.35);
+                    } catch (error) {
+                        // ignore ramp errors
+                    }
+                }
+                if (nodes.gain) {
+                    try {
+                        nodes.gain.gain.cancelScheduledValues(now);
+                        nodes.gain.gain.setTargetAtTime(0.0001, now, 0.35);
+                    } catch (error) {
+                        // ignore
+                    }
+                }
+                [nodes.oscA, nodes.oscB, nodes.lfo, nodes.filterLfo, nodes.source].forEach(node => {
+                    if (node && typeof node.stop === "function") {
+                        try {
+                            node.stop(now + 0.4);
+                        } catch (error) {
+                            try {
+                                node.stop();
+                            } catch (_) {
+                                // ignore
+                            }
+                        }
+                    }
+                });
+            }
+
+            setTimeout(() => {
+                [nodes.oscA, nodes.oscB, nodes.lfo, nodes.filterLfo, nodes.source, nodes.masterGain, nodes.gain].forEach(node => {
+                    if (node && typeof node.disconnect === "function") {
+                        try {
+                            node.disconnect();
+                        } catch (error) {
+                            // ignore disconnect errors
+                        }
+                    }
+                });
+            }, 500);
+        }
+
+        function startBackgroundMusic() {
+            const ctx = getAudioContext();
+            if (!ctx || musicNodes) {
+                return;
+            }
+
+            const masterGain = ctx.createGain();
+            masterGain.gain.setValueAtTime(0, ctx.currentTime);
+            masterGain.connect(ctx.destination);
+
+            const padFilter = ctx.createBiquadFilter();
+            padFilter.type = "lowpass";
+            padFilter.frequency.setValueAtTime(900, ctx.currentTime);
+            padFilter.Q.setValueAtTime(0.8, ctx.currentTime);
+            padFilter.connect(masterGain);
+
+            const oscA = ctx.createOscillator();
+            oscA.type = "sawtooth";
+            oscA.detune.setValueAtTime(-6, ctx.currentTime);
+            oscA.connect(padFilter);
+
+            const oscB = ctx.createOscillator();
+            oscB.type = "triangle";
+            oscB.detune.setValueAtTime(8, ctx.currentTime);
+            oscB.connect(padFilter);
+
+            const lfo = ctx.createOscillator();
+            lfo.type = "sine";
+            lfo.frequency.setValueAtTime(0.22, ctx.currentTime);
+
+            const lfoGain = ctx.createGain();
+            lfoGain.gain.setValueAtTime(0.16, ctx.currentTime);
+            lfo.connect(lfoGain).connect(masterGain.gain);
+
+            const filterLfo = ctx.createOscillator();
+            filterLfo.type = "sine";
+            filterLfo.frequency.setValueAtTime(0.08, ctx.currentTime);
+            const filterLfoGain = ctx.createGain();
+            filterLfoGain.gain.setValueAtTime(220, ctx.currentTime);
+            filterLfo.connect(filterLfoGain).connect(padFilter.frequency);
+
+            const padNotes = [110, 146.83, 174.61, 196, 164.81];
+            let noteIndex = 0;
+            const changePad = () => {
+                if (!musicNodes) {
+                    return;
+                }
+                const base = padNotes[noteIndex % padNotes.length];
+                const harmony = padNotes[(noteIndex + 2) % padNotes.length];
+                const now = ctx.currentTime;
+                oscA.frequency.cancelScheduledValues(now);
+                oscB.frequency.cancelScheduledValues(now);
+                oscA.frequency.setTargetAtTime(base, now, 1.2);
+                oscB.frequency.setTargetAtTime(harmony, now, 1.4);
+                padFilter.detune.setTargetAtTime((Math.random() - 0.5) * 20, now, 2.4);
+                noteIndex += 1;
+            };
+
+            changePad();
+            const intervalId = setInterval(changePad, 6000);
+
+            const startTime = ctx.currentTime;
+            masterGain.gain.cancelScheduledValues(startTime);
+            masterGain.gain.setValueAtTime(0, startTime);
+            masterGain.gain.linearRampToValueAtTime(0.12, startTime + 4);
+
+            oscA.start(startTime);
+            oscB.start(startTime);
+            lfo.start(startTime);
+            filterLfo.start(startTime);
+
+            musicNodes = { masterGain, oscA, oscB, lfo, filterLfo, intervalId, isCustom: false };
+        }
+
+        function spawnBlood(target, direction) {
+            const count = 12 + Math.floor(Math.random() * 8);
+            const originX = target.x + target.width / 2;
+            const originY = target.y + target.height * 0.35;
+            for (let i = 0; i < count; i += 1) {
+                if (bloodBursts.length > maxBloodParticles) {
+                    bloodBursts.shift();
+                }
+                const speed = 2 + Math.random() * 3.2;
+                const angle = (-Math.PI / 2) + (Math.random() - 0.5) * 0.9 + direction * 0.25;
+                bloodBursts.push({
+                    x: originX + (Math.random() - 0.5) * target.width * 0.25,
+                    y: originY + (Math.random() - 0.5) * target.height * 0.1,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed + 0.5,
+                    life: 0.9 + Math.random() * 0.4,
+                    radius: 1.2 + Math.random() * 2.4
+                });
+            }
+        }
+
+        function updateBlood() {
+            for (let i = bloodBursts.length - 1; i >= 0; i -= 1) {
+                const particle = bloodBursts[i];
+                particle.x += particle.vx;
+                particle.y += particle.vy;
+                particle.vx *= 0.98;
+                particle.vy += 0.35;
+                particle.life -= 0.02;
+                if (particle.life <= 0 || particle.y > groundLine + 40) {
+                    bloodBursts.splice(i, 1);
+                }
+            }
+        }
+
+        function drawBlood() {
+            bloodBursts.forEach(particle => {
+                const alpha = Math.max(0, Math.min(1, particle.life));
+                ctx.fillStyle = `rgba(164, 16, 22, ${alpha})`;
+                ctx.beginPath();
+                ctx.ellipse(particle.x, particle.y, particle.radius * 1.2, particle.radius, particle.vx * 0.05, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = `rgba(234, 46, 42, ${alpha * 0.6})`;
+                ctx.beginPath();
+                ctx.ellipse(particle.x - particle.radius * 0.3, particle.y - particle.radius * 0.4, particle.radius * 0.5, particle.radius * 0.3, 0, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        function loadCustomMusic(file) {
+            if (!file) {
+                return;
+            }
+            if (!file.type.startsWith("audio/")) {
+                alert("Please choose an audio file.");
+                return;
+            }
+
+            const ctx = getAudioContext();
+            if (!ctx) {
+                alert("Audio API not supported in this browser.");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = () => {
+                const arrayBuffer = reader.result;
+                const decodePromise = ctx.decodeAudioData(arrayBuffer);
+                if (decodePromise && typeof decodePromise.then === "function") {
+                    decodePromise.then(buffer => {
+                        applyCustomMusicBuffer(buffer);
+                    }).catch(() => {
+                        alert("Could not decode that audio file.");
+                    });
+                } else {
+                    ctx.decodeAudioData(arrayBuffer, buffer => {
+                        applyCustomMusicBuffer(buffer);
+                    }, () => {
+                        alert("Could not decode that audio file.");
+                    });
+                }
+            };
+            reader.onerror = () => {
+                alert("Unable to read that audio file.");
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function applyCustomMusicBuffer(buffer) {
+            const ctx = getAudioContext();
+            if (!ctx) {
+                return;
+            }
+            stopBackgroundMusic();
+
+            const gain = ctx.createGain();
+            const now = ctx.currentTime;
+            gain.gain.setValueAtTime(0, now);
+            gain.connect(ctx.destination);
+
+            const source = ctx.createBufferSource();
+            source.buffer = buffer;
+            source.loop = true;
+            source.connect(gain);
+            source.start(now + 0.05);
+            gain.gain.linearRampToValueAtTime(0.18, now + 3);
+
+            musicNodes = { gain, source, isCustom: true };
+        }
+
+        function updateFighter(fighter, opponent, controls) {
+            if (!matchActive) {
+                return;
+            }
+
+            if (controls.left && !controls.right) {
+                fighter.vx = Math.max(fighter.vx - 0.9, -movementSpeed);
+                fighter.facing = -1;
+            } else if (controls.right && !controls.left) {
+                fighter.vx = Math.min(fighter.vx + 0.9, movementSpeed);
+                fighter.facing = 1;
+            } else {
+                fighter.vx *= friction;
+                if (Math.abs(fighter.vx) < 0.2) {
+                    fighter.vx = 0;
+                }
+            }
+
+            if (controls.jump && fighter.y + fighter.height >= groundLine - 1) {
+                fighter.vy = -jumpStrength;
+            }
+
+            fighter.vy += gravity;
+            fighter.x += fighter.vx;
+            fighter.y += fighter.vy;
+
+            if (fighter.y + fighter.height >= groundLine) {
+                fighter.y = groundLine - fighter.height;
+                fighter.vy = 0;
+            }
+
+            fighter.x = Math.max(20, Math.min(canvas.width - fighter.width - 20, fighter.x));
+
+            if (!fighter.isAttacking && controls.attack && fighter.attackReady) {
+                fighter.isAttacking = true;
+                fighter.attackTimer = attackDuration;
+                fighter.attackReady = false;
+                fighter.hasHit = false;
+            }
+
+            if (fighter.isAttacking) {
+                fighter.attackTimer -= 1;
+                if (fighter.attackTimer <= attackDuration - attackWindowStart && fighter.attackTimer >= attackDuration - attackWindowEnd && !fighter.hasHit) {
+                    const reach = fighter.facing === 1 ? fighter.x + fighter.width + attackRange : fighter.x - attackRange;
+                    const attackStart = fighter.facing === 1 ? fighter.x + fighter.width : reach;
+                    const attackEnd = fighter.facing === 1 ? reach : fighter.x;
+                    const opponentLeft = opponent.x;
+                    const opponentRight = opponent.x + opponent.width;
+                    const overlap = Math.max(0, Math.min(attackEnd, opponentRight) - Math.max(attackStart, opponentLeft));
+                    if (overlap > 0 && Math.abs(fighter.y - opponent.y) < 50) {
+                        opponent.health = Math.max(0, opponent.health - attackDamage);
+                        spawnBlood(opponent, fighter.facing);
+                        playHitSound();
+                        fighter.hasHit = true;
+                        if (opponent.health === 0) {
+                            endMatch(fighter.id);
+                        }
+                    }
+                }
+                if (fighter.attackTimer <= 0) {
+                    fighter.isAttacking = false;
+                    fighter.attackTimer = 0;
+                    setTimeout(() => {
+                        fighter.attackReady = true;
+                    }, attackCooldown * 16);
+                }
+            }
+        }
+
+        function drawStage() {
+            ctx.save();
+
+            const skyGradient = ctx.createLinearGradient(0, 0, 0, groundLine - 40);
+            skyGradient.addColorStop(0, "#090f1d");
+            skyGradient.addColorStop(0.5, "#1f3553");
+            skyGradient.addColorStop(1, "#33445e");
+            ctx.fillStyle = skyGradient;
+            ctx.fillRect(0, 0, canvas.width, groundLine - 40);
+
+            const moonX = canvas.width * 0.76;
+            const moonY = groundLine - 185;
+            const moonRadius = 70;
+
+            const glowGradient = ctx.createRadialGradient(moonX, moonY, 0, moonX, moonY, moonRadius * 2.2);
+            glowGradient.addColorStop(0, "rgba(255, 255, 220, 0.35)");
+            glowGradient.addColorStop(0.45, "rgba(230, 230, 200, 0.18)");
+            glowGradient.addColorStop(1, "rgba(200, 200, 190, 0)");
+            ctx.fillStyle = glowGradient;
+            ctx.beginPath();
+            ctx.arc(moonX, moonY, moonRadius * 2.2, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.save();
+            ctx.translate(moonX, moonY);
+            ctx.rotate(moonRotation);
+
+            const moonGradient = ctx.createRadialGradient(-moonRadius * 0.25, -moonRadius * 0.2, moonRadius * 0.35, 0, 0, moonRadius);
+            moonGradient.addColorStop(0, "#f7f3d9");
+            moonGradient.addColorStop(0.5, "#dcd6b4");
+            moonGradient.addColorStop(1, "#a79e82");
+
+            ctx.fillStyle = moonGradient;
+            ctx.beginPath();
+            ctx.arc(0, 0, moonRadius, 0, Math.PI * 2);
+            ctx.fill();
+
+            const craterData = [
+                { x: -26, y: -12, r: 14, depth: 0.45 },
+                { x: 18, y: -20, r: 10, depth: 0.55 },
+                { x: -8, y: 22, r: 18, depth: 0.4 },
+                { x: 24, y: 12, r: 12, depth: 0.6 },
+                { x: -34, y: 10, r: 9, depth: 0.5 },
+                { x: 6, y: -2, r: 7, depth: 0.35 },
+                { x: -2, y: -28, r: 11, depth: 0.42 },
+                { x: 32, y: -6, r: 8, depth: 0.48 },
+                { x: -18, y: -30, r: 6, depth: 0.52 }
+            ];
+
+            craterData.forEach(crater => {
+                const craterGradient = ctx.createRadialGradient(
+                    crater.x - crater.r * 0.35,
+                    crater.y - crater.r * 0.4,
+                    crater.r * 0.2,
+                    crater.x,
+                    crater.y,
+                    crater.r
+                );
+                craterGradient.addColorStop(0, `rgba(130, 121, 92, ${0.42 + crater.depth * 0.3})`);
+                craterGradient.addColorStop(0.55, `rgba(160, 150, 118, ${0.24 + crater.depth * 0.22})`);
+                craterGradient.addColorStop(1, "rgba(210, 202, 170, 0)");
+                ctx.fillStyle = craterGradient;
+                ctx.beginPath();
+                ctx.ellipse(crater.x, crater.y, crater.r * 1.25, crater.r, -Math.PI / 6, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            ctx.restore();
+
+            ctx.fillStyle = "rgba(27, 40, 52, 0.88)";
+            ctx.beginPath();
+            ctx.moveTo(0, groundLine - 60);
+            ctx.quadraticCurveTo(canvas.width * 0.25, groundLine - 120, canvas.width * 0.5, groundLine - 70);
+            ctx.quadraticCurveTo(canvas.width * 0.75, groundLine - 20, canvas.width, groundLine - 90);
+            ctx.lineTo(canvas.width, groundLine - 10);
+            ctx.lineTo(0, groundLine - 10);
+            ctx.closePath();
+            ctx.fill();
+
+            const groundGradient = ctx.createLinearGradient(0, groundLine - 20, 0, canvas.height);
+            groundGradient.addColorStop(0, "#3d2f20");
+            groundGradient.addColorStop(1, "#1e1309");
+            ctx.fillStyle = groundGradient;
+            ctx.fillRect(0, groundLine - 20, canvas.width, canvas.height - (groundLine - 20));
+
+            ctx.fillStyle = "rgba(95, 72, 45, 0.5)";
+            for (let i = 0; i < 4; i += 1) {
+                const craterX = 90 + i * 180;
+                ctx.beginPath();
+                ctx.ellipse(craterX, groundLine + 15, 70, 18, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = "rgba(26, 18, 12, 0.4)";
+                ctx.beginPath();
+                ctx.ellipse(craterX, groundLine + 15, 50, 10, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = "rgba(95, 72, 45, 0.5)";
+            }
+
+            gravelPieces.forEach(pebble => {
+                ctx.save();
+                ctx.translate(pebble.x, pebble.y);
+                ctx.rotate(pebble.angle);
+                ctx.fillStyle = pebble.base;
+                ctx.beginPath();
+                ctx.ellipse(0, 0, pebble.radius * 1.2, pebble.radius, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = pebble.highlight;
+                ctx.beginPath();
+                ctx.ellipse(-pebble.radius * 0.35, -pebble.radius * 0.3, pebble.highlightRadius, pebble.highlightRadius * 0.6, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            });
+
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
+            ctx.lineWidth = 2;
+            for (let i = 0; i < 6; i += 1) {
+                ctx.beginPath();
+                const lineY = groundLine + 10 + i * 18;
+                ctx.moveTo(0, lineY);
+                ctx.lineTo(canvas.width, lineY + 6);
+                ctx.stroke();
+            }
+
+            ctx.restore();
+        }
+
+        function drawFighter(fighter) {
+            ctx.save();
+            ctx.translate(fighter.x + fighter.width / 2, fighter.y + fighter.height);
+            ctx.scale(fighter.facing, 1);
+            ctx.translate(-fighter.width / 2, -fighter.height);
+
+            if (fighter.image && fighter.imageLoaded) {
+                const naturalWidth = fighter.spriteNaturalWidth || fighter.image.naturalWidth || fighter.width;
+                const naturalHeight = fighter.spriteNaturalHeight || fighter.image.naturalHeight || fighter.height;
+                const baseScale = Math.min(fighter.width / naturalWidth, fighter.height / naturalHeight);
+                const scaleMultiplier = fighter.id === "p1" ? 1.5 : fighter.id === "p2" ? 1.6 : 1;
+                const scale = baseScale * scaleMultiplier;
+                const drawWidth = naturalWidth * scale;
+                const drawHeight = naturalHeight * scale;
+                const offsetX = (fighter.width - drawWidth) / 2;
+                const offsetY = fighter.height - drawHeight;
+                ctx.drawImage(fighter.image, offsetX, offsetY, drawWidth, drawHeight);
+            } else {
+                ctx.fillStyle = fighter.color;
+                ctx.fillRect(0, 0, fighter.width, fighter.height);
+                ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
+                ctx.fillRect(10, 10, fighter.width - 20, 16);
+            }
+
+            if (fighter.isAttacking) {
+                ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
+                ctx.fillRect(fighter.width, fighter.height * 0.2, attackRange, fighter.height * 0.6);
+            }
+
+            ctx.restore();
+        }
+
+        function updateHealthBars() {
+            p1HealthEl.style.width = fighters.p1.health + "%";
+            p2HealthEl.style.width = fighters.p2.health + "%";
+        }
+
+        function endMatch(winnerId) {
+            if (!matchActive) {
+                return;
+            }
+            matchActive = false;
+            announcement.textContent = winnerId === "p1" ? "Player One Wins" : "Player Two Wins";
+            announcement.classList.add("visible");
+        }
+
+        function resetMatch() {
+            matchActive = true;
+            fighters.p1.reset(canvas.width * 0.25);
+            fighters.p2.reset(canvas.width * 0.75 - fighters.p2.width);
+            fighters.p1.facing = 1;
+            fighters.p2.facing = -1;
+            announcement.classList.remove("visible");
+            announcement.textContent = "";
+            updateHealthBars();
+        }
+
+        function applyCustomSprite(fighter, file) {
+            if (!file) {
+                return;
+            }
+            if (!file.type.startsWith("image/")) {
+                alert("Please choose an image file.");
+                return;
+            }
+            const objectUrl = URL.createObjectURL(file);
+            const img = new Image();
+            const previousUrl = fighter.imageUrl;
+            img.onload = () => {
+                if (previousUrl) {
+                    URL.revokeObjectURL(previousUrl);
+                }
+                fighter.image = img;
+                fighter.imageLoaded = true;
+                fighter.imageUrl = objectUrl;
+                fighter.spriteNaturalWidth = img.naturalWidth;
+                fighter.spriteNaturalHeight = img.naturalHeight;
+            };
+            img.onerror = () => {
+                URL.revokeObjectURL(objectUrl);
+                alert("Could not load that file. Try a different image.");
+            };
+            img.src = objectUrl;
+        }
+
+        function loop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            updateMeteors();
+            updateLightning();
+            drawStage();
+            drawLightning();
+            drawMeteors();
+            updateFighter(fighters.p1, fighters.p2, controlState.p1);
+            updateFighter(fighters.p2, fighters.p1, controlState.p2);
+            updateBlood();
+            drawFighter(fighters.p1);
+            drawFighter(fighters.p2);
+            drawBlood();
+            updateHealthBars();
+            moonRotation += 0.0015;
+            if (moonRotation > Math.PI * 2) {
+                moonRotation -= Math.PI * 2;
+            }
+            requestAnimationFrame(loop);
+        }
+
+        function handleKeyChange(code, isDown) {
+            Object.entries(keymap).forEach(([id, bindings]) => {
+                const controls = controlState[id];
+                if (code === bindings.left) controls.left = isDown;
+                if (code === bindings.right) controls.right = isDown;
+                if (code === bindings.jump) controls.jump = isDown;
+                if (code === bindings.attack) controls.attack = isDown;
+            });
+        }
+
+        document.addEventListener("keydown", event => {
+            if (event.repeat) {
+                return;
+            }
+            handleKeyChange(event.code, true);
+        });
+
+        document.addEventListener("keyup", event => {
+            handleKeyChange(event.code, false);
+        });
+
+        initializeGravel();
+
+        ["pointerdown", "keydown"].forEach(eventName => {
+            document.addEventListener(eventName, () => {
+                resumeAudio();
+            }, { once: true });
+        });
+
+        resetButton.addEventListener("click", resetMatch);
+        p1Upload.addEventListener("change", event => {
+            const file = event.target.files && event.target.files[0];
+            if (file) {
+                applyCustomSprite(fighters.p1, file);
+            }
+            event.target.value = "";
+        });
+        p2Upload.addEventListener("change", event => {
+            const file = event.target.files && event.target.files[0];
+            if (file) {
+                applyCustomSprite(fighters.p2, file);
+            }
+            event.target.value = "";
+        });
+        musicUpload.addEventListener("change", event => {
+            const file = event.target.files && event.target.files[0];
+            if (file) {
+                resumeAudio();
+                loadCustomMusic(file);
+            }
+            event.target.value = "";
+        });
+
+        // Kick off the first match.
+        loop();
+    </script>
 </body>
 </html>
